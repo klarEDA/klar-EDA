@@ -146,12 +146,12 @@ class CSVVisualize:
 
 
     def plot_scatter_plot_with_categorical(self, save = True, show = False):
-        # df_cat = self.get_filtered_dataframe(exclude_type=[np.number])
-        # cat_cols = list(df_cat.columns)
-        # df_num = self.get_filtered_dataframe(include_type=[np.number])
-        # num_cols = list(df_num.columns)
         cat_cols = self.categorical_column_list
         num_cols = self.numerical_column_list
+        x = [num_col for num_col in num_cols if self.df[num_col].nunique() >= NUNIQUE_THRESHOLD]
+        y = [num_col for num_col in num_cols if self.df[num_col].nunique() < NUNIQUE_THRESHOLD]
+        cat_cols = cat_cols + y
+        num_cols = x
         for cat_col in cat_cols:
             for num_col in num_cols:
                 sns_plot = sns.swarmplot(x=cat_col, y=num_col, data=self.df)
@@ -263,7 +263,16 @@ class CSVVisualize:
                 self.save_or_show(plt, 'stem', str(x)+'_'+str(y), save=save, show=show)
             except Exception as e:
                 print('Cannot plot stem plot for column pair',col_pair, e)
-
+	
+	def plot_kde(self, save=True, show=False):
+        for i in range(len(self.col_names)):
+        	for j in range(i+1,len(self.col_names)):
+                 try:
+                    ax = sns.kdeplot((self.df[self.col_names[i]]), self.df[(self.col_names[j])])
+                    self.save_or_show(ax.figure, 'KDE Chart', self.col_names[i] + "_"+ self.col_names[j],save=save, show=show)
+                 except Exception as e:
+                    print('Cannot plot kde',e)
+                    
     def plot_jitter_stripplot(self, save=True, show=False):
         column_list = self.categorical_column_list
         if self.target_column in column_list:
