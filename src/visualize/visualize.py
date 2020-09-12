@@ -1,4 +1,9 @@
 from csv_visualize import CSVVisualize
+from image_visualize import ImageDataVisualize
+import tensorflow_datasets as tfds
+import cv2
+from random import randint
+import numpy as np
 
 def visualize_csv(csv_path):
     csvViz = CSVVisualize(csv_path)
@@ -21,5 +26,36 @@ def visualize_csv(csv_path):
 def test_csv_visualization():
     file_path = "" #add path to your test data
     visualize_csv(file_path)
+
+def test_image_visualization_non_uniform_images():
+    ds = tfds.load('cifar10', split='train', as_supervised=True)
+    ds = ds.take(1000)
+    images = []
+    labels = []
+    for image, label in tfds.as_numpy(ds):
+        h = randint(24, 56)
+        w = randint(24, 56)
+        image = cv2.resize(image, (w, h))
+        images.append(image)
+        labels.append(label)
+    image_viz = ImageDataVisualize(images, labels)
+    image_viz.aspect_ratio_histogram()
+    image_viz.area_vs_category()
+    image_viz.num_images_by_category()
+
+def test_image_visualization_uniform_images():
+    ds = tfds.load('mnist', split='train', as_supervised=True)
+    ds = ds.take(1000)
+    images = []
+    labels = []
+    for image, label in tfds.as_numpy(ds):
+        images.append(image)
+        labels.append(label)
+    image_viz = ImageDataVisualize(images, labels)
+    image_viz.mean_images()
+    image_viz.eigen_images()
+    image_viz.std_vs_mean()
     
 test_csv_visualization()
+test_image_visualization_non_uniform_images()
+test_image_visualization_uniform_images()
