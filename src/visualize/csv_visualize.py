@@ -173,7 +173,109 @@ class CSVVisualize:
     def plot_paired_pointplots(self, save=True, show=False):
         if self.target_column not in self.categorical_column_list:
             for column in self.categorical_column_list:
-                plot = sns.pointplot(x=column, y=self.target_column, data=self.df)
-                self.save_or_show(plot.figure, 'point_plot', column + "_" + self.target_column, save=save, show=show)
+                try:
+                    plot = sns.pointplot(x=column, y=self.target_column, data=self.df)
+                    self.save_or_show(plot.figure, 'point_plot', column + "_" + self.target_column, save=save, show=show)
+                except Exception as e:
+                    print('Cannot plot pointplot for column ',column, e)
+        else:
+            print('Target column is not categorical')
 
-    
+
+    def plot_pie_chart(self,x = None, y = None, save = True, show = False, threshold = 10):
+
+        df_new = self.get_filtered_dataframe(exclude_type=[np.number])
+
+        for col in df_new.columns:
+            try:
+
+                #size_list = []
+                #labels = []
+
+                val_series = df_new[col].value_counts()
+
+                val_name_list = list(val_series.keys())
+
+                if len(val_name_list) > threshold: #Skipping for number of values greater than threshold
+                    continue
+
+                val_count_list = [ val_series[val_name] for val_name in val_name_list ]
+
+                plot = plt.pie(val_count_list, labels=val_name_list)
+                self.save_or_show(plt, 'piechart', str(col), save=save, show=show)
+            except Exception as e:
+                print('Cannot plot pie chart for column ',col, e)
+
+    def plot_histogram(self, save=True, show=False):
+        df = self.get_filtered_dataframe(include_type=np.number)
+        for column in df:
+            try:
+                values = list(df[column])
+                plot = sns.distplot(values, bins='auto', kde=False)
+                self.save_or_show(plot.figure, 'histogram', column, save=save, show=show)
+            except Exception as e:
+                print('Cannot plot Histogram ',e)
+
+    def plot_line_chart(self, save=True, show=False):
+         xs = []
+         for col in self.col_names:
+             if self.df[col].shape[0] == self.df[col].unique().shape[0]:
+		               xs.append(col)
+         for x in xs:
+             res = []
+             for i,j in zip(self.df[x], self.df.iloc[:,-1]):
+	             res.append([i,j])
+             res.sort()
+             x1 = [x1[0] for x1 in res]
+             y1 = [y1[1] for y1 in res]
+             try:
+                 plot1 = plt.plot(x1,y1)
+                 self.save_or_show(plt, 'Line Chart', 'Line_Chart'+"_"+x,save=save, show=show)
+             except Exception as e:
+               print('Cannot plot Line Chart',e)
+
+    def plot_diagonal_correlation_matrix(self, save=True, show=False):
+        corr = self.df.corr()
+        mask = np.triu(np.ones_like(corr, dtype=np.bool))
+        f, ax = plt.subplots(figsize=(11, 9))
+        cmap = sns.diverging_palette(220, 10, as_cmap=True)
+        try:
+            plot = sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,square=True, linewidths=.5, cbar_kws={"shrink": .5})
+            self.save_or_show(plot.figure, 'Diagonal_correlation_matrix', 'Diagonal_correlation_matrix', save=save, show=show)
+        except Exception as e:
+           print('Cannot plot Diagonal_correlation_matrix',e)
+
+    def plot_stem_plots(self,  save = True, show = False ):
+
+        df_new = self.get_filtered_dataframe(include_type=[np.number])
+
+        #new_columns = list(df_new.columns)
+
+        col_pairs = self.get_correlated_columns(min_absolute_coeff=0.5)
+
+        for col_pair in col_pairs:
+
+            y = col_pair[0]
+            x = col_pair[1]
+
+            try:
+                sns_plot = plt.stem(df_new[x], df_new[y],use_line_collection=True)
+                self.save_or_show(plt, 'stem', str(x)+'_'+str(y), save=save, show=show)
+            except Exception as e:
+                print('Cannot plot stem plot for column pair',col_pair, e)
+
+    def plot_jitter_stripplot(self, save=True, show=False):
+        column_list = self.categorical_column_list
+        if self.target_column in column_list:
+            print('Ignoring as target column is in categorical_column_list')
+            return
+        y = self.df[self.target_column]
+        if len(column_list) > 1:
+            for col1, col2 in itertools.combinations(column_list, 2):
+                if self.df[col2].nunique() > self.df[col1].nunique():
+                    col1, col2 = col2, col1
+                plot = sns.stripplot(x=self.df[col1], y=y, hue=self.df[col2])
+                self.save_or_show(plot.figure, 'jitter_stripplot', col1+'_'+col2, save=save, show=show)
+        else:
+            plot = sns.stripplot(x=list(self.df[column_list[0]]), y=y)
+            self.save_or_show(plot.figure, 'jitter_stripplot', column_list[0], save=save, show=show) 

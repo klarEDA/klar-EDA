@@ -10,6 +10,12 @@ def visualize_csv(csv_path):
     csvViz.plot_scatter_plot_matrix()
     csvViz.plot_paired_pointplots()
     csvViz.plot_scatter_plot_with_categorical()
+    csvViz.plot_pie_chart()
+    csvViz.plot_histogram()
+    csvViz.plot_line_chart()
+    csvViz.plot_diagonal_correlation_matrix()
+    csvViz.plot_stem_plots()
+    csvViz.plot_jitter_stripplot()
     print('Visualization Completed Successfully')
     
 def test_csv_visualization():
