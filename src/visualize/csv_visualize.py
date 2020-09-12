@@ -90,7 +90,6 @@ class CSVVisualize:
     def plot_categorical_feature_distribution(self):
         pass
 
-    #https://seaborn.pydata.org/generated/seaborn.scatterplot.html
     def plot_scatter_plots(self,  save = True, show = False):
 
         df_new = self.get_filtered_dataframe()
@@ -109,11 +108,9 @@ class CSVVisualize:
             except Exception as e:
                 print('Cannot plot scatter plot for column pair',col_pair, e)
 
-    #https://seaborn.pydata.org/tutorial/axis_grids.html
     def plot_grid_plots_for_categorical_features(self, save_to_file = True):
         pass
 
-    #https://seaborn.pydata.org/examples/horizontal_boxplot.html
     def plot_horizontal_box_plot(self, save = True, show = False):
         #df_num = self.get_filtered_dataframe(include_type=[np.number])
         for x_col in self.numerical_column_list:
@@ -128,7 +125,6 @@ class CSVVisualize:
     def plot_pdp(self):
         pass
 
-    #https://seaborn.pydata.org/examples/regression_marginals.html
     def plot_regression_marginals(self, save = True, show = False):
 
         df_new = self.get_filtered_dataframe(include_type=[np.number])
@@ -147,3 +143,37 @@ class CSVVisualize:
                 self.save_or_show(sns_plot, 'regression_marginals', str(x)+'_'+str(y), save=save, show=show)
             except Exception as e:
                 print('Cannot plot regression marginal plot for column pair',col_pair, e)
+
+
+    def plot_scatter_plot_with_categorical(self, save = True, show = False):
+        # df_cat = self.get_filtered_dataframe(exclude_type=[np.number])
+        # cat_cols = list(df_cat.columns)
+        # df_num = self.get_filtered_dataframe(include_type=[np.number])
+        # num_cols = list(df_num.columns)
+        cat_cols = self.categorical_column_list
+        num_cols = self.numerical_column_list
+        for cat_col in cat_cols:
+            for num_col in num_cols:
+                sns_plot = sns.swarmplot(x=cat_col, y=num_col, data=self.df)
+                # """hue="species", palette=["r", "c", "y"]"""
+                self.save_or_show(sns_plot.figure, 'scatter_plot_categorical', str(cat_col)+'_'+str(num_col), save=save, show=show)
+
+    def plot_scatter_plot_matrix(self, hue_col_list=[], save=True, show=False):
+        #if len(hue_col_list)>0:
+        #    cat_col_list = hue_col_list
+        #else:
+        #    cat_col_list = list(self.get_filtered_dataframe(exclude_type=[np.number]).columns)
+        #sns_plot = sns.pairplot(df_new)
+        #self.save_or_show(sns_plot.figure, 'scatterplot_matrix', 'no_hue', save=save, show=show)
+        for col in self.categorical_column_list:
+            #print('plotting',col)
+            sns_plot = sns.pairplot(self.df, x_vars=self.categorical_column_list, y_vars=self.numerical_column_list,hue = col, dropna=True)
+            self.save_or_show(sns_plot, 'scatterplot_matrix', 'hue_'+str(col), save=save, show=show)
+
+    def plot_paired_pointplots(self, save=True, show=False):
+        if self.target_column not in self.categorical_column_list:
+            for column in self.categorical_column_list:
+                plot = sns.pointplot(x=column, y=self.target_column, data=self.df)
+                self.save_or_show(plot.figure, 'point_plot', column + "_" + self.target_column, save=save, show=show)
+
+    
