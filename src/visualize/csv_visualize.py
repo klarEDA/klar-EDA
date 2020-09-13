@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from constants import VIZ_ROOT, NUNIQUE_THRESHOLD
 
 class CSVVisualize:
+
     def __init__(self, input, target_col = None, index_column = None, exclude_columns = []):
         if type(input)==str:
             self.df = pd.read_csv(input, index_col = index_column)
@@ -52,28 +53,27 @@ class CSVVisualize:
                 if df[column].nunique() <= NUNIQUE_THRESHOLD:
                     self.categorical_column_list.append(column)
 
-    def get_correlated_columns(self, min_absolute_coeff = 0.3, include_type = [], exclude_type = []):
-
-        df_new = self.get_filtered_dataframe(include_type,exclude_type)
-
-        new_columns = list(df_new.columns)
-
+    def get_categorical_numerical_columns_pairs(self):
+        categorical_column_list = self.categorical_column_list
+        all_column_list = self.col_names
+        paired_column_list = list(itertools.product(categorical_column_list,all_column_list))
         result_paired_columns = []
+        for element in paired_column_list:
+            if element[0] != element[1]:
+                result_paired_columns.append((element[0], element[1]))
+        return result_paired_columns
 
-        temp_list = list(itertools.product(new_columns,new_columns))
+    def get_correlated_numerical_columns(self, min_absolute_coeff = 0.3):
 
-        for element in temp_list:
+        df_new = self.get_filtered_dataframe(include_type=[np.number])
+        new_columns = list(df_new.columns)
+        result_paired_columns = []
+        product_list = list(itertools.product(new_columns,new_columns))
+        for element in product_list:
             if element[0] != element[1]:
                 try:
                     df_col1 = df_new[element[0]]
                     df_col2 = df_new[element[1]]
-
-                    if df_col1.dtype in self.categorical_data_types:
-                        df_col1 = df_col1.astype('category').cat.codes.astype(np.float64)
-
-                    if df_col2.dtype in self.categorical_data_types:
-                        df_col2 = df_col2.astype('category').cat.codes.astype(np.float64)
-
                     if abs(df_col1.corr(df_col2)) >= float(min_absolute_coeff):
                         result_paired_columns.append(element)
                 except Exception as e:
@@ -102,14 +102,12 @@ class CSVVisualize:
     def plot_scatter_plots(self,  save = True, show = False):
 
         df_new = self.get_filtered_dataframe()
-
-        col_pairs = self.get_correlated_columns(min_absolute_coeff=0.5)
+        col_pairs = self.get_correlated_numerical_columns(min_absolute_coeff=0.5)
+        col_pairs.extend(self.get_categorical_numerical_columns_pairs())
 
         for col_pair in col_pairs:
-
             y = col_pair[0]
             x = col_pair[1]
-
             try:
                 sns_plot = sns.scatterplot(x=x, y=y, data=self.df)
                 self.save_or_show(sns_plot.figure, 'scatter', str(x)+'_'+str(y), save=save, show=show)
@@ -139,22 +137,17 @@ class CSVVisualize:
     def plot_regression_marginals(self, save = True, show = False):
 
         df_new = self.get_filtered_dataframe(include_type=[np.number])
-
-        #new_columns = list(df_new.columns)
-        col_pairs = self.get_correlated_columns(min_absolute_coeff=0.5,include_type=['int64','float64'])
+        col_pairs = self.get_correlated_numerical_columns(min_absolute_coeff=0.5)
+        col_pairs.extend(self.get_categorical_numerical_columns_pairs())
 
         for col_pair in col_pairs:
-
             y = col_pair[0]
             x = col_pair[1]
-
             try:
-
                 sns_plot = sns.jointplot(x, y, data=df_new,kind="reg", truncate=False)
                 self.save_or_show(sns_plot, 'regression_marginals', str(x)+'_'+str(y), save=save, show=show)
             except Exception as e:
                 print('Cannot plot regression marginal plot for column pair',col_pair, e)
-
 
     def plot_scatter_plot_with_categorical(self, save = True, show = False):
         cat_cols = self.non_continuous_col_list
@@ -186,7 +179,6 @@ class CSVVisualize:
                     print('Cannot plot pointplot for column ',column, e)
         else:
             print('Target column is not categorical')
-
 
     def plot_pie_chart(self,x = None, y = None, save = True, show = False, threshold = 10):
         df_new = self.df[self.non_continuous_col_list]
@@ -242,16 +234,12 @@ class CSVVisualize:
     def plot_stem_plots(self,  save = True, show = False ):
 
         df_new = self.get_filtered_dataframe(include_type=[np.number])
-
-        #new_columns = list(df_new.columns)
-
-        col_pairs = self.get_correlated_columns(min_absolute_coeff=0.5)
-
+        col_pairs = self.get_correlated_numerical_columns(min_absolute_coeff=0.5)
+        col_pairs.extend(self.get_categorical_numerical_columns_pairs())
+        
         for col_pair in col_pairs:
-
             y = col_pair[0]
             x = col_pair[1]
-
             try:
                 sns_plot = plt.stem(df_new[x], df_new[y],use_line_collection=True)
                 self.save_or_show(plt, 'stem', str(x)+'_'+str(y), save=save, show=show)
@@ -259,11 +247,12 @@ class CSVVisualize:
                 print('Cannot plot stem plot for column pair',col_pair, e)
     
     def plot_kde(self, save=True, show=False):
-        for i in range(len(self.col_names)):
-            for j in range(i+1,len(self.col_names)):
+        col_names = self.numerical_column_list
+        for i in range(len(col_names)):
+            for j in range(i+1,len(col_names)):
                  try:
-                    ax = sns.kdeplot((self.df[self.col_names[i]]), self.df[(self.col_names[j])])
-                    self.save_or_show(ax.figure, 'KDE Chart', self.col_names[i] + "_"+ self.col_names[j],save=save, show=show)
+                    ax = sns.kdeplot((self.df[col_names[i]]), self.df[(col_names[j])])
+                    self.save_or_show(ax.figure, 'KDE Chart', col_names[i] + "_"+ col_names[j],save=save, show=show)
                  except Exception as e:
                     print('Cannot plot kde',e)
                     
