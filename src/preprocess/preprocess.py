@@ -1,38 +1,54 @@
 from csv_preprocess import CSVPreProcess
 from image_preprocess import ImagePreprocess
 import cv2
+from random import randint
+import tensorflow_datasets as tfds
 
 def preprocess_csv(csv_path):
     csvPreP = CSVPreProcess(csv_path)
     #Append preprocessing functions here
     print('CSV Preprocessing completed successfully!')
 
+def get_sample_image_data():
+    ds = tfds.load('cats_vs_dogs', split='train', as_supervised=True)
+    ds = ds.take(1000)
+    images = []
+    labels = []
+    for image, label in tfds.as_numpy(ds):
+        h = randint(24, 56)
+        w = randint(24, 56)
+        image = cv2.resize(image, (w, h))
+        images.append(image)
+        labels.append(label)
+    image_prep = ImagePreprocess(images, labels)
+    return image_prep
+
 def preprocess_images(data_path, dataset_type):
-    imagePrep = ImagePreprocess(data_path)
-    imagePrep.resize_images(height = 512, width = 512)
+    image_prep = get_sample_image_data()
+    image_prep.resize_images(height = 128, width = 128)
     if dataset_type == 'ocr':           
-        imagePrep.denoise()
-        imagePrep.colorize(text = True)
-        imagePrep.thresholding(technique = 'gaussian' ,threshold = cv2.THRESH_BINARY)
-        # imagePrep.erode()
-        # imagePrep.dilation()
+        image_prep.denoise()
+        image_prep.colorize(text = True)
+        image_prep.thresholding(technique = 'gaussian' ,threshold = cv2.THRESH_BINARY)
+        # image_prep.erode()
+        # image_prep.dilation()
     elif dataset_type == 'face':
-        imagePrep.detect_face_and_crop(crop=True)
-        imagePrep.colorize(text = False)
-        imagePrep.adaptive_histogram_equalization()
-        imagePrep.denoise(is_gray=True)
-        imagePrep.normalize()
-        imagePrep.erode()
-        imagePrep.dilation()
-        imagePrep.contrast_control()
+        image_prep.detect_face_and_crop(crop=True)
+        image_prep.colorize(text = False)
+        image_prep.adaptive_histogram_equalization()
+        image_prep.denoise(is_gray=True)
+        image_prep.normalize()
+        image_prep.erode()
+        image_prep.dilation()
+        image_prep.contrast_control()
     else:
-        imagePrep.colorize(text = False)
-        imagePrep.adaptive_histogram_equalization()
-        imagePrep.normalize()
-        imagePrep.denoise(is_gray=True)
-        imagePrep.erode()
-        imagePrep.dilation()
-        imagePrep.contrast_control()
+        image_prep.colorize(text = False)
+        image_prep.adaptive_histogram_equalization()
+        image_prep.normalize()
+        image_prep.denoise(is_gray=True)
+        image_prep.erode()
+        image_prep.dilation()
+        image_prep.contrast_control()
     #Append preprocessing functions here
     print('Image Preprocessing completed successfully!')
     
@@ -42,8 +58,8 @@ def test_csv_preprocessing():
 
 def test_image_preprocessing():
     dataset_path = "" #add path to your test data
-    dataset_type = ''
+    dataset_type = 'other'
     preprocess_images(dataset_path, dataset_type)
 
-test_csv_preprocessing()
+# test_csv_preprocessing()
 test_image_preprocessing()
