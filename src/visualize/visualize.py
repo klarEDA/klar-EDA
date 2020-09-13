@@ -24,7 +24,7 @@ def visualize_csv(csv_path):
     print('Visualization Completed Successfully')
     
 def test_csv_visualization():
-    file_path = "/home/ask149/FOSSUnited/foss-hack-20/lib/titanic_data.csv" #add path to your test data
+    file_path = "" #add path to your test data
     visualize_csv(file_path)
 
 def test_image_visualization_non_uniform_images():
