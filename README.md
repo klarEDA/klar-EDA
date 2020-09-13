@@ -4,6 +4,8 @@ A python library for automated exploratory data analysis
 
 ## Overview
 
+https://youtu.be/FsDV6a-L-wo
+
 The aim of the library is to ease the data exploration and preprocessing steps and provide a smart and automated technique for exploratory analysis of the data
 
 The library consists of following modules
