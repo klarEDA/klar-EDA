@@ -9,6 +9,8 @@ The aim of the library is to ease the data exploration and preprocessing steps a
 The library consists of following modules
 * CSV Data Visualization
 * CSV Data Preprocessing
+* Image Data Visualization
+* Image Data Preprocessing
 
 ## Contributing
 
