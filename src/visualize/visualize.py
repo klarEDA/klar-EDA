@@ -57,5 +57,5 @@ def test_image_visualization_uniform_images():
     image_viz.std_vs_mean()
     
 test_csv_visualization()
-# test_image_visualization_non_uniform_images()
-# test_image_visualization_uniform_images()
+test_image_visualization_non_uniform_images()
+test_image_visualization_uniform_images()
