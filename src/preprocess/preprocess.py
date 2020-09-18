@@ -62,5 +62,5 @@ def test_image_preprocessing():
     dataset_type = "ocr" # ocr/ face/ default
     preprocess_images(dataset_path, dataset_type)
 
-# test_csv_preprocessing()
+test_csv_preprocessing()
 test_image_preprocessing()
