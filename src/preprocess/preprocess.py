@@ -9,8 +9,8 @@ def preprocess_csv(csv_path):
     #Append preprocessing functions here
     print('CSV Preprocessing completed successfully!')
 
-def get_sample_image_data():
-    ds = tfds.load('cats_vs_dogs', split='train', as_supervised=True)
+def get_sample_data():
+    ds = tfds.load('cifar10', split='train', as_supervised=True)
     ds = ds.take(1000)
     images = []
     labels = []
@@ -23,9 +23,10 @@ def get_sample_image_data():
     image_prep = ImagePreprocess(images, labels)
     return image_prep
 
+
 def preprocess_images(data_path, dataset_type):
-    image_prep = get_sample_image_data()
-    image_prep.resize_images(height = 128, width = 128)
+    image_prep = ImagePreprocess(data_path)
+    image_prep.resize_images(height = 512, width = 512)
     if dataset_type == 'ocr':           
         image_prep.denoise()
         image_prep.colorize(text = True)
@@ -57,8 +58,8 @@ def test_csv_preprocessing():
     preprocess_csv(file_path)
 
 def test_image_preprocessing():
-    dataset_path = "" #add path to your test data
-    dataset_type = 'other'
+    dataset_path = "/home/ask149/FOSSUnited/foss-hack-20/sample-data/images" #add path to your test data
+    dataset_type = 'ocr'
     preprocess_images(dataset_path, dataset_type)
 
 # test_csv_preprocessing()

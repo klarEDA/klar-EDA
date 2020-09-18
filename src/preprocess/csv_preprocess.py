@@ -111,7 +111,7 @@ class CSVPreProcess:
 		# Removing unrelated columns
 		del_list = []
 		for col in list(self.df.columns):
-			if(abs(cor[col][self.target_column]) < 0.2):
+			if(abs(cor[col][self.target_column]) < 0.1 and col in list(self.df.columns)):
 				del_list.append(col)
 		self.df = self.df.drop(columns = del_list, axis = 1)
 		print(self.df)

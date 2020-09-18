@@ -15,7 +15,7 @@ class ImagePreprocess:
         self.labels = labels
         if type(input)==str:
             self.path = input
-            self.image_list = sorted([ file for file in os.listdir(path) if (file.endswith(self.suffixes))])
+            self.image_list = sorted([ file for file in os.listdir(input) if (file.endswith(self.suffixes))])
             self.cv2_image_list = [ self.read_images(os.path.join(self.path,image_name)) for image_name in  self.image_list ]
         else:
             self.path = None
@@ -219,7 +219,7 @@ class ImagePreprocess:
                 self.save_or_show_image(img, image_index, 'haarcascade')
                 face_image_list.append(img)
             except Exception as e:
-                print('Error while detecting face ', image_index, e)
+                print('Error while detecing')
         self.cv2_image_list = face_image_list
 
     def adaptive_histogram_equalization(self):
@@ -232,5 +232,5 @@ class ImagePreprocess:
                 self.save_or_show_image(img, image_index, 'clahe')
                 image_index += 1
             except Exception as e:
-                print('Error during adaptive histogram equalization' , image_index, e)
+                print('Error during adaptive histogram equalization' , e)
         self.cv2_image_list = refined_image_list
