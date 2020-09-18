@@ -58,8 +58,8 @@ def test_csv_preprocessing():
     preprocess_csv(file_path)
 
 def test_image_preprocessing():
-    dataset_path = "/home/ask149/FOSSUnited/foss-hack-20/sample-data/images" #add path to your test data
-    dataset_type = 'ocr'
+    dataset_path = "" #add path to your test data
+    dataset_type = "ocr" # ocr/ face/ default
     preprocess_images(dataset_path, dataset_type)
 
 # test_csv_preprocessing()
