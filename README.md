@@ -16,10 +16,18 @@ The library consists of following modules
 
 ## Contributing
 
-If you want to contribute to this project, feel free to clone the repository::
+For contributing to this project, feel free to clone the repository::
 
-    git clone https://github.com/psy2d/klar-eda.git
+    git clone https://github.com/klarEDA/klar-EDA.git
+
+For installing the necessary packages, run the below command::
+
+    pip3 install -r requirement.txt
 
 ## License
 
 klar-eda is released under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
+
+
+Please feel free to contact us for any issues OR 
+for discussion of future scope of the library at contact.klareda@gmail.com
