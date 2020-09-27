@@ -27,18 +27,44 @@ The above mentioned modules can be used as below::
 ### CSV Data Visualization
 
     >>> from klar_eda.visualization import visualize_csv
+    
+    >>> visualize_csv(<csv-file-path>) 
+    
+    OR
+    
+    >>> visualize_csv(<data-frame>)
 
 ### CSV Data Preprocessing
 
     >>> from klar_eda.preprocessing import preprocess_csv
 
+    >>> preprocess_csv(<csv-file-path>) 
+    
+    OR
+    
+    >>> preprocess_csv(<data-frame>)
+
 ### Image Data Visualization
 
     >>> from klar_eda.visualization import visualize_images
 
+    >>> ds = tfds.load('cifar10', split='train', as_supervised=True)
+    >>> images = []
+    >>> labels = []
+    >>> for image, label in tfds.as_numpy(ds):
+            h = randint(24, 56)
+            w = randint(24, 56)
+            image = cv2.resize(image, (w, h))
+            images.append(image)
+            labels.append(label)
+    
+    >>> visualize_images(images, labels)
+
 ### Image Data Preprocessing
 
     >>> from klar_eda.preprocessing import preprocess_images
+
+    >>> preprocess_images(<images-folder-path>)
 
 ## Contributing
 
