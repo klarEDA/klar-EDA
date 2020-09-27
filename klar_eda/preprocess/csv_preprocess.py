@@ -55,17 +55,20 @@ class CSVPreProcess:
 
 		columns = self.df.columns[self.df.isna().any()].tolist()
 		for col in self.continuous_column_list:
-			if col in columns:
-				x = y = self.df[col]
-				x = x.fillna(self.df[col].mean())
-				mean_corr = x.corr(self.df[self.target_column])
-				y = y.fillna(self.df[col].median())
-				median_corr = y.corr(self.df[self.target_column])
-				if(abs(mean_corr) > abs(median_corr)):
-					self.df[col] = x
-				else:
-					self.df[col] = y
-		if ret == True:
+			try:
+				if col in columns:
+					x = y = self.df[col]
+					x = x.fillna(self.df[col].mean())
+					mean_corr = x.corr(self.df[self.target_column])
+					y = y.fillna(self.df[col].median())
+					median_corr = y.corr(self.df[self.target_column])
+					if(abs(mean_corr) > abs(median_corr)):
+						self.df[col] = x
+					else:
+						self.df[col] = y
+			except Exception as e:
+				pass
+   		if ret == True:
 			return self.df
 
 	def fill_categorical_na(self, ret = False):
