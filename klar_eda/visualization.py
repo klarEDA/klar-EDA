@@ -1,5 +1,5 @@
-from klar_eda.visualize.csv_visualize import CSVVisualize
-from klar_eda.visualize.image_visualize import ImageDataVisualize
+from .visualize.csv_visualize import CSVVisualize
+from .visualize.image_visualize import ImageDataVisualize
 
 def visualize_csv(csv, target_col=None, index_column=None, exclude_columns = []):
     visualizer = CSVVisualize(csv, target_col=target_col, index_column=index_column, exclude_columns=exclude_columns)
