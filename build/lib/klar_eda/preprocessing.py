@@ -1,5 +1,5 @@
-from klar_eda.preprocess.csv_preprocess import CSVPreProcess
-from klar_eda.preprocess.image_preprocess import ImagePreprocess
+from .preprocess.csv_preprocess import CSVPreProcess
+from .preprocess.image_preprocess import ImagePreprocess
 
 def preprocess_csv(csv, target_column=None, index_column=None):
     preprocessor = CSVPreProcess(csv, target_col=target_column, index_column=index_column)

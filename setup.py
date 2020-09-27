@@ -12,8 +12,8 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/klarEDA/klar-EDA",
-    packages=['klar_eda'],
-    namespace_packages=find_packages(include=['klar_eda', 'klar_eda.*']),
+    packages=find_packages(),
+    namespace_packages=find_packages(include=['klar_eda', 'klar_eda.visualize','klar_eda.preprocess']),
     license='MIT',
     install_requires=[
         'numpy',
