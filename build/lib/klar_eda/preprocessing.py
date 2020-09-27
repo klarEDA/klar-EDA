@@ -1,3 +1,4 @@
+import cv2
 from .preprocess.csv_preprocess import CSVPreProcess
 from .preprocess.image_preprocess import ImagePreprocess
 
