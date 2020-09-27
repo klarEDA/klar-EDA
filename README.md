@@ -57,3 +57,7 @@ klar-eda is released under the [MIT license](https://en.wikipedia.org/wiki/MIT_L
 
 Please feel free to contact us for any issues OR 
 for discussion of future scope of the library at contact.klareda@gmail.com
+
+## References
+
+https://test.pypi.org/project/klar-eda/
