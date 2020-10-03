@@ -4,7 +4,9 @@ A python library for automated exploratory data analysis
 
 ## Overview
 
-https://youtu.be/FsDV6a-L-wo
+*Documentation* - https://klareda.github.io/klar-EDA/
+
+*Presentation*  - https://youtu.be/FsDV6a-L-wo
 
 The aim of the library is to ease the data exploration and preprocessing steps and provide a smart and automated technique for exploratory analysis of the data
 
@@ -77,7 +79,7 @@ For installing the necessary packages, run the below command::
 
     $ pip3 install -r requirement.txt
 
-### Documentation ( https://klareda.github.io/klar-EDA/visualize.html )
+### Documentation
 
 To test the documentation in local::
 
