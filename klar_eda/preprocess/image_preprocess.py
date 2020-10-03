@@ -39,7 +39,7 @@ class ImagePreprocess:
             cv2.waitKey()
         cv2.destroyAllWindows()
 
-    def get_interpolation_technique(self, img, dim, inter = None):
+    def get_interpolation_technique(self, img, dim, inter = None, save=True, show=False):
         if inter == None:
             ( h, w ) = img.shape[:2]
             if h < dim[1] and w < dim[0]:
@@ -49,7 +49,7 @@ class ImagePreprocess:
             return cv2.INTER_CUBIC
         return inter
     
-    def resize_images(self, height = 256, width = 256, inter = None):
+    def resize_images(self, height = 256, width = 256, inter = None, save=True, show=False):
         resized_image_list = []
         dim = ( width, height )
         image_index = 0
@@ -58,13 +58,13 @@ class ImagePreprocess:
             try:
                 img = cv2.resize(image, dim, interpolation = self.get_interpolation_technique( image, dim, inter))
                 resized_image_list.append(img)
-                self.save_or_show_image(img,image_index,'resize')
+                self.save_or_show_image(img,image_index,'resize',save=save,show=show)
                 image_index += 1
             except Exception as e:
                 print('Error while resizing image ', image_index, e)
         self.cv2_image_list = resized_image_list
 
-    def colorize(self, color = None, text = False):
+    def colorize(self, color = None, text = False, save=True, show=False):
         colorized_image_list = []
         image_index = 0
         # add some smart logic based on the type of dataset ( face, text, scenary, etc.)
@@ -76,13 +76,13 @@ class ImagePreprocess:
                 # if text == True:
                 #     img = cv2.bitwise_not(img)
                 colorized_image_list.append(img)
-                self.save_or_show_image(img,image_index,'colorize')
+                self.save_or_show_image(img,image_index,'colorize',save=save,show=show)
                 image_index += 1
             except Exception as e:
                 print('Error while colorizing image ', image_index, e)
         self.cv2_image_list = colorized_image_list
 
-    def contrast_control(self, alpha = 1.25, beta = 0):
+    def contrast_control(self, alpha = 1.25, beta = 0, save=True, show=False):
         contrast_image_list = []
         image_index = 0
         for image in self.cv2_image_list:
@@ -90,13 +90,13 @@ class ImagePreprocess:
                 np_image = image.copy().astype(float)
                 img = cv2.convertScaleAbs(np_image, alpha = alpha, beta = beta)
                 contrast_image_list.append(img)
-                self.save_or_show_image(img,image_index,'contrast')
+                self.save_or_show_image(img,image_index,'contrast',save=save,show=show)
                 image_index += 1
             except Exception as e:
                 print('Error while changing contast for image ',image_index, e)
         self.cv2_image_list = contrast_image_list
 
-    def thresholding(self, technique = 'mean', threshold = cv2.THRESH_BINARY):
+    def thresholding(self, technique = 'mean', threshold = cv2.THRESH_BINARY, save=True, show=False):
         binarized_image_list = []
         image_index = 0
         #study the parameters
@@ -105,23 +105,23 @@ class ImagePreprocess:
                 if technique == 'simple':
                     res , img = cv2.threshold(image, 120, 255, threshold)
                     binarized_image_list.append(img)
-                    self.save_or_show_image(img,image_index,'threshold')
+                    self.save_or_show_image(img,image_index,'threshold',save=save,show=show)
                     image_index += 1
                 elif technique == 'mean':
                     img = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_MEAN_C, threshold, 199, 5)
                     binarized_image_list.append(img)
-                    self.save_or_show_image(img,image_index,'threshold')
+                    self.save_or_show_image(img,image_index,'threshold',save=save,show=show)
                     image_index += 1
                 else:
                     img = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, threshold, 199, 5)
                     binarized_image_list.append(img)
-                    self.save_or_show_image(img,image_index,'threshold')
+                    self.save_or_show_image(img,image_index,'threshold',save=save,show=show)
                     image_index += 1
             except Exception as e:
                 print('Error during binarization of image ', image_index, e)
         self.cv2_image_list = binarized_image_list
     
-    def denoise(self, is_gray = True):
+    def denoise(self, is_gray = True, save=True, show=False):
         denoised_image_list = []
         image_index = 0
         for image in self.cv2_image_list:
@@ -131,13 +131,13 @@ class ImagePreprocess:
                 else:
                     img = cv2.fastNlMeansDenoising(image,None,3,7,21)
                 denoised_image_list.append(img)
-                self.save_or_show_image(img,image_index,'denoise')
+                self.save_or_show_image(img,image_index,'denoise',save=save,show=show)
                 image_index += 1
             except Exception as e:
                 print('Error during denoising image ', image_index, e)
         self.cv2_image_list = denoised_image_list
         
-    def erode(self, dim = None):
+    def erode(self, dim = None, save=True, show=False):
         eroded_image_list = []
         image_index = 0
         if dim == None:
@@ -146,14 +146,14 @@ class ImagePreprocess:
             try:
                 kernel = np.ones(dim,np.uint8)
                 img = cv2.erode(image,kernel,iterations = 1)
-                self.save_or_show_image(img,image_index,'erode')
+                self.save_or_show_image(img,image_index,'erode',save=save,show=show)
                 image_index += 1
                 eroded_image_list.append(img)
             except Exception as e:
                 print('Error during eroding image ', image_index, e)
         self.cv2_image_list = eroded_image_list
 
-    def dilation(self, dim = None):
+    def dilation(self, dim = None, save=True, show=False):
         dilated_image_list = []
         image_index = 0
         if dim == None:
@@ -162,14 +162,14 @@ class ImagePreprocess:
             try:
                 kernel = np.ones(dim,np.uint8)
                 img = cv2.dilate(image,kernel,iterations = 1)
-                self.save_or_show_image(img,image_index,'dilation')
+                self.save_or_show_image(img,image_index,'dilation',save=save,show=show)
                 image_index += 1
                 dilated_image_list.append(img)
             except Exception as e:
                 print('Error while dilating image ', image_index, e)
         self.cv2_image_list = dilated_image_list
         
-    def normalize(self, dim = None):
+    def normalize(self, dim = None, save=True, show=False):
         normalized_image_list = []
         image_index = 0
         if dim == None:
@@ -179,7 +179,7 @@ class ImagePreprocess:
                 kernel = np.zeros(dim)
                 img = cv2.normalize(image,kernel,0,255,cv2.NORM_MINMAX)
                 normalized_image_list.append(img)
-                self.save_or_show_image(img,image_index,'normalize')
+                self.save_or_show_image(img,image_index,'normalize',save=save,show=show)
                 image_index += 1
             except Exception as e:
                 print('Error while normalizing image ', image_index, e)
@@ -193,7 +193,7 @@ class ImagePreprocess:
         #if cascade_type == 'face':
         return cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
-    def detect_face_and_crop(self, crop = False):
+    def detect_face_and_crop(self, crop = False, save=True, show=False):
         face_image_list = []
         image_index = -1
         face_cascade = self.get_cascade('face')
@@ -215,21 +215,21 @@ class ImagePreprocess:
                     img = cv2.rectangle(img,(lx,ly),(ux,uy),(255,0,0),2)
                     roi_color = img[y:y+h, x:x+w]
                     if crop == True:
-                        self.save_or_show_image(roi_color, image_index, 'haarcascade_faces')
-                self.save_or_show_image(img, image_index, 'haarcascade')
+                        self.save_or_show_image(roi_color, image_index, 'haarcascade_faces',save=save,show=show)
+                self.save_or_show_image(img, image_index, 'haarcascade',save=save,show=show)
                 face_image_list.append(img)
             except Exception as e:
                 print('Error while detecing')
         self.cv2_image_list = face_image_list
 
-    def adaptive_histogram_equalization(self):
+    def adaptive_histogram_equalization(self, save=True, show=False):
         refined_image_list = []
         image_index = 0
         for image in self.cv2_image_list:
             try:
                 img = self.clahe.apply(image)
                 refined_image_list.append(img)
-                self.save_or_show_image(img, image_index, 'clahe')
+                self.save_or_show_image(img, image_index, 'clahe',save=save,show=show)
                 image_index += 1
             except Exception as e:
                 print('Error during adaptive histogram equalization' , e)
