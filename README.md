@@ -65,6 +65,7 @@ The above mentioned modules can be used as below::
     >>> from klar_eda.preprocessing import preprocess_images
 
     >>> preprocess_images(<images-folder-path>)
+    
 
 ## Contributing
 
@@ -75,6 +76,18 @@ For contributing to this project, feel free to clone the repository::
 For installing the necessary packages, run the below command::
 
     $ pip3 install -r requirement.txt
+
+### Documentation ( https://klareda.github.io/klar-EDA/visualize.html )
+
+To test the documentation in local::
+
+    $ cd docs/
+    $ make html
+
+To push the latest documentation in github::
+    
+    $ cd docs/
+    $ make github
 
 ## License
 
