@@ -67,7 +67,8 @@ The above mentioned modules can be used as below::
     >>> from klar_eda.preprocessing import preprocess_images
 
     >>> preprocess_images(<images-folder-path>)
-    
+
+If you liked our project, it would be really helpful if you could share this project with others.
 
 ## Contributing
 
