@@ -160,5 +160,4 @@ class CSVPreProcess:
 		
 		parsed_date = dateutil.parser.parse(input_date, dayfirst=True)
 		self.converted_date = parsed_date.strftime(output_date_formats[output_date_format])
-		print(self.converted_date)
 		return self.converted_date
