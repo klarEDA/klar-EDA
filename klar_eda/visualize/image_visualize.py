@@ -24,7 +24,7 @@ from sklearn.manifold import TSNE
 ############################################################################
 
 class ImageDataVisualize:
-
+# the first function is used intialize/get data in the form of images and labels.It also checks/looksout for the greyscale values.Also it checks whether the number of images are equal to the no of labels for naming /labelling properly.If it is not found an error is shown.
     def __init__(self, data, labels, boxes=None):
         self.images = data
         self.labels = labels
