@@ -84,12 +84,12 @@ For installing the necessary packages, run the below command::
 
 To test the documentation in local::
 
-    $ cd docs/
+    $ cd docsource/
     $ make html
 
 To push the latest documentation in github::
     
-    $ cd docs/
+    $ cd docsource/
     $ make github
 
 ## License
