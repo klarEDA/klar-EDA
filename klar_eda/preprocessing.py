@@ -1,6 +1,8 @@
 from .preprocess.csv_preprocess import CSVPreProcess
 from .preprocess.image_preprocess import ImagePreprocess
+# importing the morph-preprocess and intelligent preprocess class
 from .preprocess.image_preprocess.morphological import MorphologicalPreprocess
+from .preprocess.image_preprocess.intelligent import IntelligentImagePreprocess
 
 def preprocess_csv(csv, target_column=None, index_column=None):
     """Preprocesses the csv file OR the dataframe, 
@@ -36,7 +38,9 @@ def preprocess_images(data_path, dataset_type='other',save=True,show=False):
     :type show: bool, optional
     """
     preprocessor = ImagePreprocess(data_path)
+    # creating a morphological preprocessor object
     morphPreprocessor = MorphologicalPreprocess(data_path)
+    inteligentPreprocessor = IntelligentImagePreprocess(data_path)
     
     preprocessor.resize_images(height = 512, width = 512)
     if dataset_type == 'ocr':
@@ -44,7 +48,7 @@ def preprocess_images(data_path, dataset_type='other',save=True,show=False):
         preprocessor.colorize(text = True,save=save,show=show)
         morphPreprocessor.thresholding(technique = 'gaussian' ,threshold = cv2.THRESH_BINARY,save=save,show=show)
     elif dataset_type == 'face':
-        preprocessor.detect_face_and_crop(crop=True,save=save,show=show)
+        inteligentPreprocessor.detect_face_and_crop(crop=True,save=save,show=show)
         preprocessor.colorize(text = False,save=save,show=show)
         preprocessor.adaptive_histogram_equalization(save=save,show=show)
         morphPreprocessor.denoise(is_gray=True,save=save,show=show)

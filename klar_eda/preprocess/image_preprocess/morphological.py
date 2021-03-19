@@ -7,15 +7,14 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from ..image_preprocess import ImagePreprocess
 
-"""
-This document contains the functions:
-Thresholding, Denoise, Erode, Dilation, normalize
-"""
-
 class MorphologicalPreprocess:
+    """
+    This class contains the functions:
+    Thresholding, Denoise, Erode, Dilation, normalize
+    """    
     def __init__(self,input,labels = None):
         self.suffixes = ('.jpeg', '.jpg', '.png')
-        self.clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+        # self.clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
         self.labels = labels
         if type(input)==str:
             self.path = input
@@ -25,6 +24,8 @@ class MorphologicalPreprocess:
             self.path = None
             self.image_list = None
             self.cv2_image_list = input
+    
+    #  the functions
     def thresholding(self, technique = 'mean', threshold = cv2.THRESH_BINARY, save=True, show=False):
         binarized_image_list = []
         image_index = 0

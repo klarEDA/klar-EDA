@@ -96,6 +96,7 @@ class ImagePreprocess:
                 print('Error while changing contast for image ',image_index, e)
         self.cv2_image_list = contrast_image_list
 
+    # ***************************CODE SEGMENT MOVED TO ./morphological.py***************************
     # def thresholding(self, technique = 'mean', threshold = cv2.THRESH_BINARY, save=True, show=False):
     #     binarized_image_list = []
     #     image_index = 0
@@ -183,7 +184,7 @@ class ImagePreprocess:
     #             image_index += 1
     #         except Exception as e:
     #             print('Error while normalizing image ', image_index, e)
-
+    # ******************************************************************************************
     def print_variables(self):
         for img in self.cv2_image_list:
             cv2.imshow('img',img)
@@ -193,35 +194,37 @@ class ImagePreprocess:
         #if cascade_type == 'face':
         return cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
-    def detect_face_and_crop(self, crop = False, save=True, show=False):
-        face_image_list = []
-        image_index = -1
-        face_cascade = self.get_cascade('face')
-        for image in self.cv2_image_list:
-            try:
-                image_index += 1
-                img = image.copy()
-                faces = face_cascade.detectMultiScale(img, 1.3, 5)
-                if faces is None:
-                    print('Unable to find face ')
-                    continue
-                for (x,y,w,h) in faces:
-                    padding = 10
-                    ih, iw = img.shape[:2]
-                    lx = max( 0, x - padding )
-                    ly = max( 0, x - padding )
-                    ux = min( iw, x + w + padding )
-                    uy = min( ih, y + h + padding )
-                    img = cv2.rectangle(img,(lx,ly),(ux,uy),(255,0,0),2)
-                    roi_color = img[y:y+h, x:x+w]
-                    if crop == True:
-                        self.save_or_show_image(roi_color, image_index, 'haarcascade_faces',save=save,show=show)
-                self.save_or_show_image(img, image_index, 'haarcascade',save=save,show=show)
-                face_image_list.append(img)
-            except Exception as e:
-                print('Error while detecing')
-        self.cv2_image_list = face_image_list
-
+    # ***************************CODE SEGMENT MOVED TO ./intelligent.py***************************
+    # def detect_face_and_crop(self, crop = False, save=True, show=False):
+    #     face_image_list = []
+    #     image_index = -1
+    #     face_cascade = self.get_cascade('face')
+    #     for image in self.cv2_image_list:
+    #         try:
+    #             image_index += 1
+    #             img = image.copy()
+    #             faces = face_cascade.detectMultiScale(img, 1.3, 5)
+    #             if faces is None:
+    #                 print('Unable to find face ')
+    #                 continue
+    #             for (x,y,w,h) in faces:
+    #                 padding = 10
+    #                 ih, iw = img.shape[:2]
+    #                 lx = max( 0, x - padding )
+    #                 ly = max( 0, x - padding )
+    #                 ux = min( iw, x + w + padding )
+    #                 uy = min( ih, y + h + padding )
+    #                 img = cv2.rectangle(img,(lx,ly),(ux,uy),(255,0,0),2)
+    #                 roi_color = img[y:y+h, x:x+w]
+    #                 if crop == True:
+    #                     self.save_or_show_image(roi_color, image_index, 'haarcascade_faces',save=save,show=show)
+    #             self.save_or_show_image(img, image_index, 'haarcascade',save=save,show=show)
+    #             face_image_list.append(img)
+    #         except Exception as e:
+    #             print('Error while detecing')
+    #     self.cv2_image_list = face_image_list
+    # ******************************************************************************************
+    
     def adaptive_histogram_equalization(self, save=True, show=False):
         refined_image_list = []
         image_index = 0
