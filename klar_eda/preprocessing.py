@@ -1,5 +1,6 @@
 from .preprocess.csv_preprocess import CSVPreProcess
 from .preprocess.image_preprocess import ImagePreprocess
+from .preprocess.image_preprocess.morphological import MorphologicalPreprocess
 
 def preprocess_csv(csv, target_column=None, index_column=None):
     """Preprocesses the csv file OR the dataframe, 
@@ -35,26 +36,28 @@ def preprocess_images(data_path, dataset_type='other',save=True,show=False):
     :type show: bool, optional
     """
     preprocessor = ImagePreprocess(data_path)
+    morphPreprocessor = MorphologicalPreprocess(data_path)
+    
     preprocessor.resize_images(height = 512, width = 512)
     if dataset_type == 'ocr':
-        preprocessor.denoise(save=save,show=show)
+        morphPreprocessor.denoise(save=save,show=show)
         preprocessor.colorize(text = True,save=save,show=show)
-        preprocessor.thresholding(technique = 'gaussian' ,threshold = cv2.THRESH_BINARY,save=save,show=show)
+        morphPreprocessor.thresholding(technique = 'gaussian' ,threshold = cv2.THRESH_BINARY,save=save,show=show)
     elif dataset_type == 'face':
         preprocessor.detect_face_and_crop(crop=True,save=save,show=show)
         preprocessor.colorize(text = False,save=save,show=show)
         preprocessor.adaptive_histogram_equalization(save=save,show=show)
-        preprocessor.denoise(is_gray=True,save=save,show=show)
-        preprocessor.normalize(save=save,show=show)
-        preprocessor.erode(save=save,show=show)
-        preprocessor.dilation(save=save,show=show)
+        morphPreprocessor.denoise(is_gray=True,save=save,show=show)
+        morphPreprocessor.normalize(save=save,show=show)
+        morphPreprocessor.erode(save=save,show=show)
+        morphPreprocessor.dilation(save=save,show=show)
         preprocessor.contrast_control(save=save,show=show)
     else:
         preprocessor.colorize(text = False,save=save,show=show)
         preprocessor.adaptive_histogram_equalization(save=save,show=show)
-        preprocessor.normalize(save=save,show=show)
-        preprocessor.denoise(is_gray=True,save=save,show=show)
-        preprocessor.erode(save=save,show=show)
-        preprocessor.dilation(save=save,show=show)
+        morphPreprocessor.normalize(save=save,show=show)
+        morphPreprocessor.denoise(is_gray=True,save=save,show=show)
+        morphPreprocessor.erode(save=save,show=show)
+        morphPreprocessor.dilation(save=save,show=show)
         preprocessor.contrast_control(save=save,show=show)
     print('Image Preprocessing completed successfully!')
