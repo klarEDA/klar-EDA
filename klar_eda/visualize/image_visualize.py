@@ -136,7 +136,8 @@ class ImageDataVisualize:
                 img = np.round((eigenVectors[i] + 1)/2)
                 plot = plt.imshow(img)
                 self.save_or_show(plot.figure, 'eigen_images/{}'.format(group[0]), str(i), save=save, show=show)
-
+#in this function we try to figure out the number of images in each category(labels) by aranging them in  descending order(frequency wise/no of images wise).
+#we then represent it visually  by plotting barplots to show them.
     def num_images_by_category(self, save=True, show=False):
         counts = self.dataset['Label'].value_counts()
         plot = sns.barplot(x=counts.index, y=counts.tolist())
