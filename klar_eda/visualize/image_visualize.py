@@ -144,7 +144,9 @@ class ImageDataVisualize:
         self.save_or_show(plot.figure, 'num_images_by_category', 'bar_chart',x_label='category', y_label='No. of images', save=save, show=show)
         plot = plt.pie(counts.tolist(), labels=counts.index)
         self.save_or_show(plt, 'num_images_by_category', 'pie_chart', save=save, show=show)
-
+#here we plot a graph showing the dependence of standard deviation on the mean of the data.here standard deviation is represented as a function of mean and then plotted.
+# first the images are segregated by their labels and then their std and mean are taken into variables images and mean.
+#they are then apepnede or put into the y and x cordintae of the graph and then plotted.
     def std_vs_mean(self, save=True, show=False):
         groups = self.dataset.groupby('Label')
         y = []
@@ -166,6 +168,8 @@ class ImageDataVisualize:
         labels = self.dataset['Label'].to_list()
         plot = sns.scatterplot(x=means, y=stds, hue=labels, palette='viridis', legend='full')
         self.save_or_show(plot.figure, 'std_vs_mean', 'std_vs_mean_all',x_label='mean', y_label='Std Deviation', save=save, show=show)
+#t-Distributed Stochastic Neighbor Embedding (t-SNE) is an unsupervised, non-linear technique primarily used for data exploration and visualizing high-dimensional data.
+# In simpler terms, t-SNE gives you a feel or intuition of how the data is arranged in a high-dimensional space. 
 
     def t_sne(self, batch_size=32, save=True, show=False):
         model = ResNet50(weights='imagenet', pooling=max, include_top = False)
