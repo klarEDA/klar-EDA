@@ -80,6 +80,18 @@ class CSVPreProcess:
         for col in self.numerical_column_list:
             if col != self.target_column:
                 self.df[col]=(self.df[col]-self.df[col].min())/(self.df[col].max()-self.df[col].min())
+    def standardize(self):
+
+        ### Data use cases for Standardization: ###
+
+        # It makes the data with unit variance and zero mean. 
+        # This will be used when the features have different scales , for example if there are two features salary and age , Obviously age will be from 1-100 and salary can be substantially higher than age values. So if we fit the model directly the salary feature will have a larger impact on predicting the target variable. But it may not be the case.
+        # So It's necessary to standardise the data.  
+        # We should do standardization in case of algorithms where Gradient descent is used for optimizations, for achieving the minima faster. 
+        # Standardisation is also called z-score normalisation.
+
+        for i in df.columns:
+            self.df[i] = (self.df[i] - self.df[i].mean())/self.df[i].std() # Standardise the data z = (x - mean)/ (standard deviation)
 
     def encode_categorical(self):
         enc = OneHotEncoder(handle_unknown='ignore')
