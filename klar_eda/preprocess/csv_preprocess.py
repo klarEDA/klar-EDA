@@ -6,6 +6,9 @@ from .constants import VIZ_ROOT, NUNIQUE_THRESHOLD
 from sklearn.preprocessing import OneHotEncoder
 from scipy import stats
 from sklearn import preprocessing
+import datetime
+import dateutil.parser
+
 
 class CSVPreProcess:
 
@@ -27,6 +30,7 @@ class CSVPreProcess:
         temp_col_list = [num_col for num_col in self.numerical_column_list if self.df[num_col].nunique() < NUNIQUE_THRESHOLD]
         self.continuous_column_list = [x for x in self.numerical_column_list if x not in temp_col_list]
         self.non_continuous_col_list = self.categorical_column_list + temp_col_list
+        self.converted_date = ''
 
     def get_filtered_dataframe(self, include_type = [], exclude_type = []):
 
@@ -68,8 +72,8 @@ class CSVPreProcess:
                         self.df[col] = y
             except Exception as e:
                 pass
-           if ret == True:
-            return self.df
+            if ret == True:
+                return self.df
 
     def fill_categorical_na(self, ret = False):
         self.df = self.df.fillna("Unknown")
@@ -81,15 +85,7 @@ class CSVPreProcess:
             if col != self.target_column:
                 self.df[col]=(self.df[col]-self.df[col].min())/(self.df[col].max()-self.df[col].min())
     def standardize(self):
-
-        ### Data use cases for Standardization: ###
-
-        # It makes the data with unit variance and zero mean. 
-        # This will be used when the features have different scales , for example if there are two features salary and age , Obviously age will be from 1-100 and salary can be substantially higher than age values. So if we fit the model directly the salary feature will have a larger impact on predicting the target variable. But it may not be the case.
-        # So It's necessary to standardise the data.  
-        # We should do standardization in case of algorithms where Gradient descent is used for optimizations, for achieving the minima faster. 
-        # Standardisation is also called z-score normalisation.
-
+        """ It makes the data with unit variance and zero mean. """
         for i in df.columns:
             self.df[i] = (self.df[i] - self.df[i].mean())/self.df[i].std() # Standardise the data z = (x - mean)/ (standard deviation)
 
@@ -140,3 +136,33 @@ class CSVPreProcess:
                 del_list.append(col)
         self.df = self.df.drop(columns = del_list, axis = 1)
         self.df.to_csv('Preprocess_file.csv')
+
+    def convert_date_format(self, input_date, output_date_format = 'DD/MM/YYYY'):
+        """
+        Purpose:
+        ---
+        Converts the input date into any specified format
+
+        Input Arguments:
+        ---
+        `input_date` : str
+
+        `output_date_format` : str
+
+        Returns:
+        ---
+        `converted_date` : str
+        
+        Example call:
+        ---
+        convert_date_format('2021/28/02', 'YYYY-MM-DD')
+        """
+        output_date_formats = { 'DD/MM/YYYY' : '%d/%m/%Y', 'YYYY/DD/MM': '%Y/%d/%m', 'MM/DD/YYYY': '%m/%d/%Y',       \
+                                'YYYY/MM/DD' : '%Y/%m/%d', 'DD-MM-YYYY': '%d-%m-%Y', 'YYYY-DD-MM': '%Y-%d-%m',       \
+                                'MM-DD-YYYY' : '%m-%d-%Y', 'YYYY-MM-DD': '%Y-%m-%d'}
+        
+        
+        parsed_date = dateutil.parser.parse(input_date, dayfirst=True)
+        self.converted_date = parsed_date.strftime(output_date_formats[output_date_format])
+        return self.converted_date
+
