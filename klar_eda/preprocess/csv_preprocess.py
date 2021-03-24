@@ -84,10 +84,19 @@ class CSVPreProcess:
         for col in self.numerical_column_list:
             if col != self.target_column:
                 self.df[col]=(self.df[col]-self.df[col].min())/(self.df[col].max()-self.df[col].min())
-    def standardize(self):
-        """ It makes the data with unit variance and zero mean. """
+    def z_score_normalization(self):
+        """ It makes the data with unit variance and zero mean.
+        Converts x to x' where,
+        x' = (x - mean(x))/standard_deviation(x) """
         for i in df.columns:
             self.df[i] = (self.df[i] - self.df[i].mean())/self.df[i].std() # Standardise the data z = (x - mean)/ (standard deviation)
+
+    def mean_normalization(self):
+        """ converts x to x' where,
+        x' = (x - mean(x))/(max(x) - min(x))
+        """
+        for col in df.columns:
+            self.df[i] = (self.df[i] - self.df[i].mean())/(self.df[i].max() - self.df[i].min())
 
     def encode_categorical(self):
         enc = OneHotEncoder(handle_unknown='ignore')
