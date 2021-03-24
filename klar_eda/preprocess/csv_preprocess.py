@@ -85,7 +85,7 @@ class CSVPreProcess:
             if col != self.target_column:
                 self.df[col]=(self.df[col]-self.df[col].min())/(self.df[col].max()-self.df[col].min())
     def standardize(self):
-
+    
         ### Data use cases for Standardization: ###
 
         # It makes the data with unit variance and zero mean. 
@@ -96,6 +96,13 @@ class CSVPreProcess:
 
         for i in df.columns:
             self.df[i] = (self.df[i] - self.df[i].mean())/self.df[i].std() # Standardise the data z = (x - mean)/ (standard deviation)
+
+    def mean_normalization(self):
+        """ converts x to x' where,
+        x' = (x - mean(x))/(max(x) - min(x))
+        """
+        for col in df.columns:
+            self.df[i] = (self.df[i] - self.df[i].mean())/(self.df[i].max() - self.df[i].min())
 
     def encode_categorical(self):
         enc = OneHotEncoder(handle_unknown='ignore')
