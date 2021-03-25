@@ -27,13 +27,13 @@ class ImageDataVisualize:
 
 
     def __init__(self, data, labels, boxes=None):
-   """init:this function is for initializing the parameters to work on
+   """this function is for initializing the parameters to work on
       :self_param:the file from which we have to takee the data to work on
       :self_type:csv file
       :data_param:the images form our dataset
       :labels_param:to categorize the images.
-      :boxes_param:a null parameter used for storing the dimensions of the images."""
-  
+      :boxes_param:a null parameter used for storing the dimensions of the images.
+  """
         self.images = data
         self.labels = labels
         self.grey_present = False
@@ -60,15 +60,15 @@ class ImageDataVisualize:
  
 
     def save_or_show(self, plot, plot_type, file_name,x_label=None, y_label=None, save=True, show=False):
-  """function save_or_show: to save the file(plot_type) in its designated directory or to make the path for the directory if such directory doesn't exist and then displaying the file type.
+  """ to save the file(plot_type) in its designated directory or to make the path for the directory if such directory doesn't exist and then displaying the file type.
      :plot_param-the figure to be plotted for graphical visualization. 
      :plot_type- the file in which all the visualizations are stored.
      :file_name- the name of the file to be stored.
      :x-label - the label to be put on the x-axis of the graph
      :y-label- the label to be put on the y-axis of the graph
      :save-parameter- the boolean parameter passed for saving the file.
-     :show-parameter- display the fiel along with its title and also displayin gthe plot."""
-    
+     :show-parameter- display the fiel along with its title and also displayin gthe plot.
+    """
   
         if save:
             save_dir = join(VIZ_ROOT, plot_type)
@@ -121,7 +121,7 @@ class ImageDataVisualize:
         self.save_or_show(plot.figure, 'area_vs_category', 'area_vs_category', x_label='category',y_label= 'area', save=save, show=show)
 
     def mean_images(self, save=True, show=False):
-        """mean_images:The function for evaluating the mean of the areas per category.
+        """The function for evaluating the mean of the areas per category.
             :save-param:the boolean  for instructing  to save the file.
             :show-param:to display the ratios,the plot ,the labels and everything related to visualisation."""
         groups = self.dataset.groupby('Label')
@@ -156,7 +156,7 @@ class ImageDataVisualize:
         self.save_or_show(plt, 'num_images_by_category', 'pie_chart', save=save, show=show)
 
     def std_vs_mean(self, save=True, show=False):
-        """std_vs_mean:the function used to plot the graph of the standard deviation versus the mean.
+        """the function used to plot the graph of the standard deviation versus the mean.
           : self_param:The dataset on which the analysis is used.
           :save-param:the boolean  for instructing  to save the file.
           :show-param:to display the ratios,the plot ,the labels and everything related to visualisation."""
