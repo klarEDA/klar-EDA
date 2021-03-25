@@ -60,6 +60,15 @@ class ImageDataVisualize:
  
 
     def save_or_show(self, plot, plot_type, file_name,x_label=None, y_label=None, save=True, show=False):
+  """function save_or_show: to save the file(plot_type) in its designated directory or to make the path for the directory if such directory doesn't exist and then displaying the file type.
+     :plot_param-the figure to be plotted for graphical visualization. 
+     :plot_type- the file in which all the visualizations are stored.
+     :file_name- the name of the file to be stored.
+     :x-label - the label to be put on the x-axis of the graph
+     :y-label- the label to be put on the y-axis of the graph
+     :save-parameter- the boolean parameter passed for saving the file.
+     :show-parameter- display the fiel along with its title and also displayin gthe plot."""
+    
   
         if save:
             save_dir = join(VIZ_ROOT, plot_type)
@@ -79,6 +88,9 @@ class ImageDataVisualize:
 
 
     def validate_images(self):
+        """validate_images:the function used to validate images,whether or not  it has the required no of dimensions  and whether  it's a numpy array or not.
+            :self-the dataset on which the visualization and the analysis has to be performed."""
+        
         for image, label in zip(self.images, self.labels):
             if type(image) != np.ndarray:
                 print('Image not a numpy array, skipping...')
@@ -92,17 +104,26 @@ class ImageDataVisualize:
                 continue
 
     def aspect_ratio_histogram(self, save=True, show=False):
+        """ aspect_ratio_histogram:the function used to define the aspect ratio of the histogram.aspect_ratio=Width/Height.
+            :save-param:the boolean  for instructing  to save the file.
+            :show-param:to display the ratios,the plot ,the labels and everything related to visualisation."""
         aspect_ratios = self.dataset['Width'] / self.dataset['Height']
         plot = sns.histplot(aspect_ratios, bins='auto')
         self.save_or_show(plot.figure, 'aspect_ratios', 'aspect_ratios', x_label='aspect_ratios', y_label='frequency', save=save, show=show)
 
 
     def area_vs_category(self, save=True, show=False):
+        """area_vs_category:the plot to show the areas percategory(label).
+            :save-param:the boolean  for instructing  to save the file.
+            :show-param:to display the ratios,the plot ,the labels and everything related to visualisation."""
         mean_areas = self.dataset.groupby('Label')['area'].mean()
         plot = sns.barplot(x=mean_areas.index, y=mean_areas.tolist())
         self.save_or_show(plot.figure, 'area_vs_category', 'area_vs_category', x_label='category',y_label= 'area', save=save, show=show)
 
     def mean_images(self, save=True, show=False):
+        """mean_images:The function for evaluating the mean of the areas per category.
+            :save-param:the boolean  for instructing  to save the file.
+            :show-param:to display the ratios,the plot ,the labels and everything related to visualisation."""
         groups = self.dataset.groupby('Label')
         for group in groups:
             images = group[1]['Image']
@@ -125,6 +146,9 @@ class ImageDataVisualize:
                 self.save_or_show(plot.figure, 'eigen_images/{}'.format(group[0]), str(i), save=save, show=show)
 
     def num_images_by_category(self, save=True, show=False):
+        """ the function to display the no of images per category.
+            :save-param:the boolean  for instructing  to save the file.
+            :show-param:to display the ratios,the plot ,the labels and everything related to visualisation."""
         counts = self.dataset['Label'].value_counts()
         plot = sns.barplot(x=counts.index, y=counts.tolist())
         self.save_or_show(plot.figure, 'num_images_by_category', 'bar_chart',x_label='category', y_label='No. of images', save=save, show=show)
@@ -132,6 +156,11 @@ class ImageDataVisualize:
         self.save_or_show(plt, 'num_images_by_category', 'pie_chart', save=save, show=show)
 
     def std_vs_mean(self, save=True, show=False):
+        """std_vs_mean:the function used to plot the graph of the standard deviation versus the mean.
+          : self_param:The dataset on which the analysis is used.
+          :save-param:the boolean  for instructing  to save the file.
+          :show-param:to display the ratios,the plot ,the labels and everything related to visualisation."""
+        
         groups = self.dataset.groupby('Label')
         y = []
         x = []
@@ -155,6 +184,11 @@ class ImageDataVisualize:
 
 
     def t_sne(self, batch_size=32, save=True, show=False):
+        """t-SNE gives you a feel or intuition of how the data is arranged in a high-dimensional space.
+            :batch_size:the dataset is dividied into batches for smooth functioning of the model on the dataset.
+            :save-param:the boolean  for instructing  to save the file.
+            ::show-param:to display the ratios,the plot ,the labels and everything related to visualisation."""
+        
         model = ResNet50(weights='imagenet', pooling=max, include_top = False)
         features_list = []
         print('Extracting features ...')
