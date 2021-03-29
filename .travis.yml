@@ -6,3 +6,14 @@ virtualenv:
   system_site_packages: true
 install:
   - pip install -r requirements.txt
+branches:
+  only:
+   - master
+after_success:
+    - coveralls
+notifications:
+  email:
+    recipients:
+      - sridharsha598@@gmail.com
+    on_success: always
+    on_failure: always
