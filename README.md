@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/harshasridhar/klar-EDA.svg?branch=master)](https://travis-ci.org/harshasridhar/klar-EDA)
 # klar-eda
 
 A python library for automated exploratory data analysis
