@@ -28,8 +28,8 @@ class ImageDataVisualize:
 
     def __init__(self, data, labels, boxes=None):
    """this function is for initializing the parameters to work on
-      :self_param:the file from which we have to takee the data to work on
-      :self_type:csv file
+      :self_param:the file from which we have to take the data to work on
+      :type:csv file
       :data_param:the images form our dataset
       :labels_param:to categorize the images.
       :boxes_param:a null parameter used for storing the dimensions of the images.
