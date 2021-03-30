@@ -14,8 +14,8 @@ from sklearn.manifold import TSNE
 
 ############################################################################
 # To do: 1) resizing for the funnctions that require uniform size
-#        2) handle rgb/gray images 
-#        3) axis labels, plot title  
+#        2) handle rgb/gray images
+#        3) axis labels, plot title
 #        4) num components in eigen images
 #        5) optimize mean/eigen computation
 #        6) optimize std vs mean, different types of plots
@@ -27,11 +27,12 @@ class ImageDataVisualize:
 
 
     def __init__(self, data, labels, boxes=None):
-        """ this function is for initializing the parameters to work on
-            :param data:the images form our dataset
-            :type  data:csv file.
-            :param labels:to categorize the images.
-            :param boxes:a null parameter used for storing the dimensions of the images.
+        """Constructor for Image Data Visualization.
+
+        :param data: images
+        :type data: list of numpy image arrays
+        :param labels: labels corresponding to each image
+        :param boxes: list containing shape of each image
         """
         self.images = data
         self.labels = labels
@@ -56,23 +57,27 @@ class ImageDataVisualize:
         self.dataset['area'] = self.dataset['Height'] * self.dataset['Width']
         print('Number of images after validation and filtering:', self.num_images)
 
- 
+
 
     def save_or_show(self, plot, plot_type, file_name,x_label=None, y_label=None, save=True, show=False):
-            """ to save the file(plot_type) in its designated directory or to make the path for the directory if such directory doesn't exist and then displaying the file type.
-                 :param plot:the figure to be plotted for graphical visualization.
-                 :type plot:png file.
-                 :param file_name: the name of the file to be stored.
-                 :type file_name:csv file
-                 :param x-label : the label to be put on the x-axis of the graph
-                 :type x-label: string
-                 :param y-label: the label to be put on the y-axis of the graph
-                 :type y-label: string
-                 : param save: the boolean parameter passed for saving the file.
-                 :type save:boolean
-                 :param show: display the fiel along with its title and also displaying the plot.
-                 :type show:boolean        """
-  
+        """To save the file(plot_type) in its designated directory or to make
+        the path for the directory if such directory doesn't exist and then
+        displaying the file type.
+
+        :param plot: The figure to be plotted for graphical visualization.
+        :type plot: png file.
+        :param file_name: The filename to be stored.
+        :type file_name: csv file
+        :param x-label : The label to be put on the x-axis of the graph
+        :type x-label: string
+        :param y-label: The label to be put on the y-axis of the graph
+        :type y-label: string
+        :param save: To save the results in the background
+        :type save: boolean
+        :param show: To display the images in the foreground
+        :type show: boolean
+        """
+
         if save:
             save_dir = join(VIZ_ROOT, plot_type)
             if not exists(save_dir):
@@ -90,14 +95,14 @@ class ImageDataVisualize:
         plt.clf()
 
 
+
+
     def validate_images(self):
-        """validate_images:the function used to validate images,whether or not  it has the required no of dimensions  and whether  it's a numpy array or not.
-           : param self-the dataset on which the visualization and the analysis has to be performed."""
+        """Function used to validate images, whether or not it has the required
+        no of dimensions and whether it's a numpy array or not."""
         for image, label in zip(self.images, self.labels):
             if type(image) != np.ndarray:
                 print('Image not a numpy array, skipping...')
-                self.images.remove(image)
-                self.labels.remove(label)
                 continue
             elif image.ndim < 2:
                 print('Image has less than 2 dimensions, skipping...')
@@ -105,38 +110,43 @@ class ImageDataVisualize:
                 self.labels.remove(label)
                 continue
 
+                continue
+
     def aspect_ratio_histogram(self, save=True, show=False):
-        """ aspect_ratio_histogram:the function used to define the aspect ratio of the histogram.aspect_ratio=Width/Height.
-            :param save:the boolean  for instructing  to save the file.
-            :type  save:boolean
-            :param show:to display the ratios,the plot ,the labels and everything related to visualisation.
-            :type show:boolean
+        """Function used to plot the aspect ratio histogram for the dataset.
+
+        :param save: To save the results in the background
+        :type save: boolean
+        :param show: To display the images in the foreground
+        :type show: boolean
         """
         aspect_ratios = self.dataset['Width'] / self.dataset['Height']
         plot = sns.histplot(aspect_ratios, bins='auto')
-        self.save_or_show(plot.figure, 'aspect_ratios', 'aspect_ratios', x_label='aspect_ratios', y_label='frequency', save=save, show=show)
+
 
 
     def area_vs_category(self, save=True, show=False):
-        """area_vs_category:the plot to show the areas percategory(label).
-            :param save:the boolean  for instructing  to save the file.
-            :type  save:boolean
-            :param show:to display the ratios,the plot ,the labels and everything related to visualisation.
-            :type show:boolean"""
+        """Function used to plot area per category of the images.
+
+        :param save: To save the results in the background
+        :type save: boolean
+        :param show: To display the images in the foreground
+        :type show: boolean
+        """
         mean_areas = self.dataset.groupby('Label')['area'].mean()
         plot = sns.barplot(x=mean_areas.index, y=mean_areas.tolist())
         self.save_or_show(plot.figure, 'area_vs_category', 'area_vs_category', x_label='category',y_label= 'area', save=save, show=show)
 
     def mean_images(self, save=True, show=False):
-        """The function for evaluating the mean of the areas per category.
-            :param save:the boolean  for instructing  to save the file.
-            :type  save:boolean
-            :param show:to display the ratios,the plot ,the labels and everything related to visualisation.
-            :type show:boolean"""
+        """Function used for evaluating the mean of the areas per category.
+
+        :param save: To save the results in the background
+        :type save: boolean
+        :param show: To display the images in the foreground
+        :type show: boolean
+        """
         groups = self.dataset.groupby('Label')
-        for group in groups:
-            images = group[1]['Image']
-            mean_image = np.array(list(images)).mean(axis=0)
+        for group in groups:array(list(images)).mean(axis=0)
             plot = plt.imshow(mean_image/255)
             self.save_or_show(plot.figure, 'mean_images', str(group[0]), save=save, show=show)
 
@@ -154,29 +164,33 @@ class ImageDataVisualize:
                 plot = plt.imshow(img)
                 self.save_or_show(plot.figure, 'eigen_images/{}'.format(group[0]), str(i), save=save, show=show)
 
+                self.save_or_show(plot.figure, 'eigen_images/{}'.format(group[0]), str(i), save=save, show=show)
+
     def num_images_by_category(self, save=True, show=False):
-        """ the function to display the no of images per category.
-            :param save:the boolean  for instructing  to save the file.
-            :type  save:boolean
-            :param show:to display the ratios,the plot ,the labels and everything related to visualisation.
-            :type show:boolean"""
+        """Function used to display the no of images per category.
+
+        :param save: To save the results in the background
+        :type save: boolean
+        :param show: To display the images in the foreground
+        :type show: boolean
+        """
         counts = self.dataset['Label'].value_counts()
         plot = sns.barplot(x=counts.index, y=counts.tolist())
-        self.save_or_show(plot.figure, 'num_images_by_category', 'bar_chart',x_label='category', y_label='No. of images', save=save, show=show)
-        plot = plt.pie(counts.tolist(), labels=counts.index)
+        self.save_or_show(plt, 'num_images_by_category', 'pie_chart', save=save, show=show)
+
         self.save_or_show(plt, 'num_images_by_category', 'pie_chart', save=save, show=show)
 
     def std_vs_mean(self, save=True, show=False):
-       """the function used to plot the graph of the standard deviation versus the mean.
-          :param save:the boolean  for instructing  to save the file.
-            :type  save:boolean
-            :param show:to display the ratios,the plot ,the labels and everything related to visualisation.
-            :type show:boolean"""
-        
+        """Function used to plot the graph of the standard deviation versus the
+        mean plot.
+
+        :param save: To save the results in the background
+        :type save: boolean
+        :param show: To display the images in the foreground
+        :type show: boolean
+        """
         groups = self.dataset.groupby('Label')
-        y = []
-        x = []
-        hue = []
+        y = [][]
         for group in groups:
             images = group[1]['Image']
             images = np.array(list(images))
@@ -196,24 +210,25 @@ class ImageDataVisualize:
 
 
     def t_sne(self, batch_size=32, save=True, show=False):
-        """t-SNE gives you a feel or intuition of how the data is arranged in a high-dimensional space.
-            :param batch_size:the dataset is dividied into batches for smooth functioning of the model on the dataset.
-            :type batch_size:integer
-            :param save:the boolean  for instructing  to save the file.
-            :type  save:boolean
-            :param show:to display the ratios,the plot ,the labels and everything related to visualisation.
-            :type show:boolean
-            """
+        """ t-distributed Stochastic Neighbor Embedding - used to visualize high dimensional data
         
+            :param batch_size: The size of the batch
+            :type batch_size: integer
+            :param save: To save the results in the background
+            :type save: boolean
+            :param show: To display the images in the foreground
+            :type show: boolean
+            """
+
         model = ResNet50(weights='imagenet', pooling=max, include_top = False)
         features_list = []
         print('Extracting features ...')
         for image in tqdm(self.images):
             if self.grey_present and (image.ndim < 3 or image.shape[-1] == 1):
                 image = np.stack((image.squeeze(),)*3, axis=-1)
-            image = np.expand_dims(image, axis=0) 
-            image = preprocess_input(image) 
-            features = model.predict(image) 
+            image = np.expand_dims(image, axis=0)
+            image = preprocess_input(image)
+            features = model.predict(image)
             features_reduce = features.squeeze()
             features_list.append(features_reduce)
 

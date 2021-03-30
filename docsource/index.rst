@@ -12,6 +12,7 @@ klar-eda's documentation!
 
    preprocess
    visualize
+   image_visualize
 
 
 Indices and tables
