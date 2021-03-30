@@ -28,9 +28,8 @@ class ImageDataVisualize:
 
     def __init__(self, data, labels, boxes=None):
         """ this function is for initializing the parameters to work on
-            :param self:the file from which we have to take the data to work on
-            :type self:csv file
             :param data:the images form our dataset
+            :type  data:csv file.
             :param labels:to categorize the images.
             :param boxes:a null parameter used for storing the dimensions of the images.
         """
@@ -61,7 +60,7 @@ class ImageDataVisualize:
 
     def save_or_show(self, plot, plot_type, file_name,x_label=None, y_label=None, save=True, show=False):
             """ to save the file(plot_type) in its designated directory or to make the path for the directory if such directory doesn't exist and then displaying the file type.
-                 :param plot-the figure to be plotted for graphical visualization.
+                 :param plot:the figure to be plotted for graphical visualization.
                  :type plot:png file.
                  :param file_name: the name of the file to be stored.
                  :type file_name:csv file
@@ -71,7 +70,7 @@ class ImageDataVisualize:
                  :type y-label: string
                  : param save: the boolean parameter passed for saving the file.
                  :type save:boolean
-                 :param show: display the fiel along with its title and also displayin gthe plot.
+                 :param show: display the fiel along with its title and also displaying the plot.
                  :type show:boolean        """
   
         if save:
@@ -93,7 +92,7 @@ class ImageDataVisualize:
 
     def validate_images(self):
         """validate_images:the function used to validate images,whether or not  it has the required no of dimensions  and whether  it's a numpy array or not.
-            : param self-the dataset on which the visualization and the analysis has to be performed."""
+           : param self-the dataset on which the visualization and the analysis has to be performed."""
         for image, label in zip(self.images, self.labels):
             if type(image) != np.ndarray:
                 print('Image not a numpy array, skipping...')
