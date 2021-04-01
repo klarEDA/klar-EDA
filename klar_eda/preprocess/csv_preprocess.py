@@ -85,7 +85,7 @@ class CSVPreProcess:
             if col != self.target_column:
                 self.df[col]=(self.df[col]-self.df[col].min())/(self.df[col].max()-self.df[col].min())
     def standardize(self):
-    
+        
         ### Data use cases for Standardization: ###
 
         # It makes the data with unit variance and zero mean. 
