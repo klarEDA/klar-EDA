@@ -13,8 +13,21 @@ sys.path.insert(0,join(parent_dir,'preprocess'))
 from ..preprocess.csv_preprocess import CSVPreProcess
 
 class CSVVisualize:
+    """This class generates visualization plots, graphs and charts of data from csv file
 
+    :param input: Either a path to csv file or a pandas DataFrame
+    :type input: str/ pandas.DataFrame
+    :param target_col: Name of the target column, defaults to None
+    :type target_col: str, optional
+    :param index_column: Either column index or string name of column(s) to be used as index 
+        of the DataFrame, defaults to None
+    :type index_column: int/ str/ list, optional
+    :param exclude_columns: List of columns to be excluded from visualization, defaults to []
+    :type exclude_columns: list, optional
+    """
     def __init__(self, input, target_col = None, index_column = None, exclude_columns = []):
+        """Parameterized Constructor to initialize data members
+        """
         if type(input)==str:
             self.df = pd.read_csv(input, index_col = index_column)
         else:
@@ -37,6 +50,23 @@ class CSVVisualize:
         self.non_continuous_col_list = self.categorical_column_list + temp_col_list
 
     def save_or_show(self, plot, plot_type, file_name, x_label=None, y_label=None, save=True, show=False):
+        """This method saves the plot as figure and/or shows(displays) the plot depending on the arguments passed
+
+        :param plot: Figure object used to save the plot as figure
+        :type plot: figure object
+        :param plot_type: Type of plot generated
+        :type plot_type: str
+        :param file_name: Name of file in which the figure is to be saved 
+        :type file_name: str
+        :param x_label: Label text for x-axis of the plot, defaults to None
+        :type x_label: str, optional
+        :param y_label: Label text for y-axis of the plot, defaults to None
+        :type y_label: str, optional
+        :param save: 'True' if plot is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if plot is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        """
         if save:
             save_dir = join(VIZ_ROOT, plot_type)
             if not exists(save_dir):
@@ -52,12 +82,26 @@ class CSVVisualize:
         plt.clf()
 
     def get_filtered_dataframe(self, include_type = [], exclude_type = []):
+        """This method filters the DataFrame by returning a subset of the DataFrame's columns depending on 
+        the dtypes to be included/excluded. 
+
+        :param include_type: dtypes to be included while filtering, defaults to []
+        :type include_type: list, optional
+        :param exclude_type: dtypes to be excluded while filtering, defaults to []
+        :type exclude_type: list, optional
+        :return: Original DataFrame if both include_type and exclude_type are empty. Otherwise, a subset 
+            of the DataFrame's columns based on the dtypes to be included/excluded
+        :rtype: pandas.DataFrame
+        """
         if include_type or exclude_type:
             return self.df.select_dtypes(include = include_type, exclude = exclude_type)
         else:
             return self.df
 
     def populate_categorical_column_list(self):
+        """This method populates the categorical column list by appending the columns in the filtered DataFrame 
+        with distinct observations less than or equal to the NUNIQUE_THRESHOLD to it.
+        """
         df = self.get_filtered_dataframe(exclude_type=np.number)
         if not self.categorical_column_list:
             for column in df:
@@ -65,6 +109,11 @@ class CSVVisualize:
                     self.categorical_column_list.append(column)
 
     def get_categorical_numerical_columns_pairs(self):
+        """This method generates a list of paired columns of categorical data taking on numerical values
+
+        :return: List of paired columns
+        :rtype: list
+        """
         categorical_column_list = self.categorical_column_list
         all_column_list = self.col_names
         paired_column_list = list(itertools.product(categorical_column_list,all_column_list))
@@ -75,7 +124,13 @@ class CSVVisualize:
         return result_paired_columns
 
     def get_correlated_numerical_columns(self, min_absolute_coeff = 0.3):
+        """This method generates a list of paired columns of correlated numerical data
 
+        :param min_absolute_coeff: Minimum absolute value of correlation coefficient, defaults to 0.3
+        :type min_absolute_coeff: float, optional
+        :return: List of paired columns of correlated numerical data
+        :rtype: list
+        """
         df_new = self.get_filtered_dataframe(include_type=[np.number])
         new_columns = list(df_new.columns)
         result_paired_columns = []
@@ -92,6 +147,13 @@ class CSVVisualize:
         return result_paired_columns
 
     def plot_correlation_map(self, save=True, show=False):
+        """This method generates correlation map
+
+        :param save: 'True' if correlation map is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if correlation map is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        """
         df_num = self.get_filtered_dataframe(include_type=np.number)
         df_cont = self.df[self.continuous_column_list]
         corr_matrix_num = df_num.corr()
@@ -102,7 +164,13 @@ class CSVVisualize:
         self.save_or_show(plot.figure, 'correlation_map', 'corr_map_continuous_cols', save=save, show=show)
 
     def plot_scatter_plots(self,  save = True, show = False):
+        """This method generates scatter plots
 
+        :param save: 'True' if scatter plot is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if scatter plot is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        """
         df_new = self.get_filtered_dataframe()
         col_pairs = self.get_correlated_numerical_columns(min_absolute_coeff=0.5)
         col_pairs.extend(self.get_categorical_numerical_columns_pairs())
@@ -117,6 +185,13 @@ class CSVVisualize:
                 print('Cannot plot scatter plot for column pair',col_pair, e)
 
     def plot_horizontal_box_plot(self, save = True, show = False):
+        """This method generates box plots
+
+        :param save: 'True' if box plot is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if box plot is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        """
         new_df = self.df
         cat_cols = self.non_continuous_col_list
         num_cols = self.numerical_column_list
@@ -131,7 +206,13 @@ class CSVVisualize:
                 self.save_or_show(sns_plot.figure, 'box_plot', str(x_col)+'_'+str(y_col),x_label = x_col, y_label = y_col, save=save, show=show)
 
     def plot_regression_marginals(self, save = True, show = False):
+        """This method generates regression marginal plots
 
+        :param save: 'True' if regression marginal plot is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if regression marginal plot is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        """
         df_new = self.get_filtered_dataframe(include_type=[np.number])
         col_pairs = self.get_correlated_numerical_columns(min_absolute_coeff=0.5)
         col_pairs.extend(self.get_categorical_numerical_columns_pairs())
@@ -146,6 +227,13 @@ class CSVVisualize:
                 print('Cannot plot regression marginal plot for column pair',col_pair, e)
 
     def plot_scatter_plot_with_categorical(self, save = True, show = False):
+        """This method generates categorical scatter plots
+
+        :param save: 'True' if categorical scatter plot is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if categorical scatter plot is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        """
         cat_cols = self.non_continuous_col_list
         num_cols = self.continuous_column_list
         for cat_col in cat_cols:
@@ -154,11 +242,27 @@ class CSVVisualize:
                 self.save_or_show(sns_plot.figure, 'scatter_plot_categorical', str(cat_col)+'_'+str(num_col),x_label = cat_col, y_label = num_col, save=save, show=show)
 
     def plot_scatter_plot_matrix(self, hue_col_list=[], save=True, show=False):
+        """This method generates scatter plot matrix
+
+        :param hue_col_list: Columns to map plot aspects in different colors, defaults to []
+        :type hue_col_list: list, optional
+        :param save: 'True' if scatter plot matrix is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if scatter plot matrix is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        """
         for col in self.categorical_column_list:
             sns_plot = sns.pairplot(self.df, x_vars=self.categorical_column_list, y_vars=self.numerical_column_list,hue = col, dropna=True)
             self.save_or_show(sns_plot, 'scatterplot_matrix', 'hue_'+str(col),x_label = col, save=save, show=show)
 
     def plot_paired_pointplots(self, save=True, show=False):
+        """This method generates point plots
+
+        :param save: 'True' if point plot is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if point plot is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        """
         if self.target_column not in self.categorical_column_list:
             for column in self.categorical_column_list:
                 try:
@@ -170,6 +274,19 @@ class CSVVisualize:
             print('Target column is not categorical')
 
     def plot_pie_chart(self,x = None, y = None, save = True, show = False, threshold = 10):
+        """This method generates pie charts
+
+        :param x: x variable, defaults to None
+        :type x: NoneType, optional
+        :param y: y variable, defaults to None
+        :type y: NoneType, optional
+        :param save: 'True' if pie chart is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if pie chart is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        :param threshold: Slice visibility threshold, defaults to 10
+        :type threshold: int, optional
+        """
         df_new = self.df[self.non_continuous_col_list]
         for col in df_new.columns:
             try:
@@ -182,6 +299,13 @@ class CSVVisualize:
                 print('Cannot plot pie chart for column ',col, e)
 
     def plot_histogram(self, save=True, show=False):
+        """This method generates histograms
+
+        :param save: 'True' if histogram is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if histogram is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        """
         df = self.get_filtered_dataframe(include_type=np.number)
         for column in df:
             try:
@@ -192,6 +316,13 @@ class CSVVisualize:
                 print('Cannot plot Histogram ',e)
 
     def plot_line_chart(self, save=True, show=False):
+        """This method generates line charts
+
+        :param save: 'True' if line chart is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if line chart is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        """
          xs = []
          for col in self.col_names:
              if self.df[col].shape[0] == self.df[col].unique().shape[0]:
@@ -210,6 +341,13 @@ class CSVVisualize:
                print('Cannot plot Line Chart',e)
 
     def plot_diagonal_correlation_matrix(self, save=True, show=False):
+        """This method generates diagonal correlation matrix
+
+        :param save: 'True' if diagonal correlation matrix is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if diagonal correlation matrix is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        """
         corr = self.df.corr()
         mask = np.triu(np.ones_like(corr, dtype=np.bool))
         f, ax = plt.subplots(figsize=(11, 9))
@@ -221,7 +359,13 @@ class CSVVisualize:
            print('Cannot plot Diagonal_correlation_matrix',e)
 
     def plot_stem_plots(self,  save = True, show = False ):
+        """This method generates stem plots
 
+        :param save: 'True' if stem plot is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if stem plot is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        """
         df_new = self.get_filtered_dataframe(include_type=[np.number])
         col_pairs = self.get_correlated_numerical_columns(min_absolute_coeff=0.5)
         col_pairs.extend(self.get_categorical_numerical_columns_pairs())
@@ -236,6 +380,13 @@ class CSVVisualize:
                 print('Cannot plot stem plot for column pair',col_pair, e)
 
     def plot_kde(self, save=True, show=False):
+        """This method generates Kernel Density Estimation(KDE) charts
+
+        :param save: 'True' if KDE chart is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if KDE chart is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        """
         col_names = self.numerical_column_list
         for i in range(len(col_names)):
             for j in range(i+1,len(col_names)):
@@ -246,6 +397,13 @@ class CSVVisualize:
                     print('Cannot plot kde',e)
 
     def plot_jitter_stripplot(self, save=True, show=False):
+        """This method generates strip plots 
+
+        :param save: 'True' if strip plot is to be saved as figure and 'False' otherwise, defaults to True
+        :type save: bool, optional
+        :param show: 'True' if strip plot is to be shown(displayed) and 'False' otherwise, defaults to False
+        :type show: bool, optional
+        """
         column_list = self.categorical_column_list
         if self.target_column in column_list:
             print('Ignoring as target column is in categorical_column_list')
