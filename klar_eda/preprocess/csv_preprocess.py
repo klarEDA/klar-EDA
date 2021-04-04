@@ -72,8 +72,13 @@ class CSVPreProcess:
                         self.df[col] = y
             except Exception as e:
                 pass
+<<<<<<< HEAD
             if ret == True:
                 return self.df
+=======
+        if ret == True:
+            return self.df
+>>>>>>> issue22
 
     def fill_categorical_na(self, ret = False):
         self.df = self.df.fillna("Unknown")
