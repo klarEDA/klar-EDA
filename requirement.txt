@@ -5,7 +5,7 @@ face-recognition-models==0.3.0
 imagesize==1.2.0
 jsonschema==3.2.0
 matplotlib==3.4.1
-numpy==1.20.2
+numpy==1.18.1
 opencv-python==4.4.0.42
 packaging==20.4
 pandas==1.0.4
