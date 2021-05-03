@@ -23,7 +23,7 @@ You can install the test version of the library by the below command::
 
     $ pip3 install -i https://test.pypi.org/simple/ klar-eda    
 
-The above mentioned modules can be used as below::
+The above-mentioned modules can be used as below::
 
     >>> import klar_eda
 
