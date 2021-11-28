@@ -101,6 +101,13 @@ klar-eda is released under the [MIT license](https://en.wikipedia.org/wiki/MIT_L
 Please feel free to contact us for any issues OR 
 for discussion of future scope of the library at contact.klareda@gmail.com
 
+## Owners
+
+[Ashish Kshirsagar](https://ask149.github.io/)
+[Rishabh Agarwal](https://rishabh-me.github.io/)
+[Sayali Deshpande](https://www.linkedin.com/in/sayali-deshpande-808247164/)
+[Ishaan Ballal](https://www.linkedin.com/in/ishaan21/)
+
 ## References
 
 https://test.pypi.org/project/klar-eda/
