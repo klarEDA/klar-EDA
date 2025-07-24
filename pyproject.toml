@@ -1,0 +1,194 @@
+[tool.poetry]
+name = "klar-eda"
+version = "2.0.0"
+description = "A modern, AI-powered Python library for automated exploratory data analysis"
+authors = ["Ashish Kshirsagar <contact.klareda@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/klarEDA/klar-EDA"
+repository = "https://github.com/klarEDA/klar-EDA"
+documentation = "https://klareda.github.io/klar-EDA/"
+keywords = ["data-analysis", "eda", "visualization", "ai", "machine-learning"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+packages = [{include = "klar_eda"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+# Core data processing
+polars = "^0.20.0"
+pandas = "^2.2.0"
+numpy = "^1.26.0"
+# Visualization
+plotly = "^5.18.0"
+altair = "^5.2.0"
+matplotlib = "^3.8.0"
+seaborn = "^0.13.0"
+# Web framework
+fastapi = "^0.109.0"
+uvicorn = {extras = ["standard"], version = "^0.27.0"}
+# Data validation and serialization
+pydantic = "^2.5.0"
+pydantic-settings = "^2.1.0"
+# Database
+sqlalchemy = "^2.0.0"
+alembic = "^1.13.0"
+asyncpg = "^0.29.0"
+# Async and task processing
+redis = "^5.0.0"
+celery = "^5.3.0"
+# AI/ML
+openai = "^1.12.0"
+scikit-learn = "^1.4.0"
+# Utilities
+typer = "^0.9.0"
+rich = "^13.7.0"
+httpx = "^0.26.0"
+python-multipart = "^0.0.6"
+# File processing
+openpyxl = "^3.1.0"
+pyarrow = "^15.0.0"
+
+[tool.poetry.group.dev.dependencies]
+# Testing
+pytest = "^8.0.0"
+pytest-asyncio = "^0.23.0"
+pytest-cov = "^4.0.0"
+pytest-mock = "^3.12.0"
+# Code quality
+black = "^24.0.0"
+ruff = "^0.2.0"
+mypy = "^1.8.0"
+pre-commit = "^3.6.0"
+# Documentation
+mkdocs = "^1.5.0"
+mkdocs-material = "^9.5.0"
+mkdocstrings = {extras = ["python"], version = "^0.24.0"}
+# Development tools
+ipython = "^8.21.0"
+jupyter = "^1.0.0"
+
+[tool.poetry.group.test.dependencies]
+# Additional testing dependencies
+factory-boy = "^3.3.0"
+faker = "^22.0.0"
+respx = "^0.20.0"
+
+[tool.poetry.scripts]
+klar-eda = "klar_eda.cli:app"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# Tool configurations
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "plotly.*",
+    "altair.*",
+    "polars.*",
+    "celery.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.coverage.run]
+source = ["klar_eda"]
+omit = [
+    "*/tests/*",
+    "*/venv/*",
+    "*/.venv/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+skips = ["B101", "B601"]
